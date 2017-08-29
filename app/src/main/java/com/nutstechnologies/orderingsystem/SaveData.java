@@ -39,11 +39,13 @@ public class SaveData {
         TransactionHeaderSave(TableName, PaxNo, Trans_HDRID, paymentID, joinTable_id, parent_TableName);
     }
     //endregion
-
+    //region TODO: Save Transaction Header to msSql Database
     public static void TransactionHeaderSave(String TableName, Integer Pax, UUID uuid, UUID PaymentID, String joinTable_id, String parent_TableName) {
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransHDR '" + uuid + "','" + PaymentID
                 + "','" + TableName + "','" + Pax + "', '"  + Device + "', '"  + joinTable_id + "', '" + parent_TableName + "', '" + SaveData.Waiter_ID + "'");
     }
+    //endregion
+
     public static void OrderItemSave(UUID HeaderID, UUID ItemID, Double Qty, Double Price, Double Amount, int count_pos, boolean set_menu){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransDTL '"+ HeaderID +"','"+ItemID
                 +"','"+ Qty +"','"+ Price + "', '"+ Amount + "', '"+ count_pos + "', '"+ set_menu + "', '"+ false + "'");
