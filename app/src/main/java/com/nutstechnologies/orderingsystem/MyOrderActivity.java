@@ -553,7 +553,7 @@ public class MyOrderActivity extends Fragment {
                                                         break;
                                                     }
                                                     Toast.makeText(getContext(), "Order is Hold.", Toast.LENGTH_LONG).show();
-                                             } catch (Exception e) {
+                                                } catch (Exception e) {
                                                     Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
                                                 }
                                                 _hold_item.setText("Unhold");
@@ -1412,44 +1412,85 @@ public class MyOrderActivity extends Fragment {
             TextView txt_Title = new TextView(mContext);
             txt_Title.setText("VOID REASON");
             txt_Title.setTextSize(40);
-            txt_Title.setPadding(0,0,220,0);
+            txt_Title.setPadding(0,0,20,0);
             txt_Title.setTextColor(Color.WHITE);
             Button btn_Finish = new Button(mContext);
+            Button btn_All = new Button(mContext);
+            btn_All.setText("Void All");
             btn_Finish.setText("Void");
+            btn_All.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if(ReasonID != null){
+                        SaveData.VoidAll(SaveData.Trans_HDRID, ReasonID);
+                        if (!_totals.isEmpty()) {
+                            for (int i = 0; i < _totals.size(); i++) {
+                                _totalData y = _totals.get(i);
+                                if (y._itemID == _menuID) {
+                                    _totals.remove(i);
+                                }
+                            }
+                        }
+                        my_total.setText("Total: " + formatter.format(0));
+                        Toast.makeText(getContext(), "Order is successfully removed.", Toast.LENGTH_LONG).show();
+                        DOptions.hide();
+                        Fragment fragment = new MyOrderActivity();
+                        int ft;
+                        ft = ((FragmentActivity)getContext()).getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.content_main, fragment)
+                                .commit();
+                        _detail_layout.setVisibility(View.GONE);
+                    }
+                    else{
+                        Toast.makeText(getContext(), "You must Select Reason First..", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+
             btn_Finish.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    final ResultSet set = connectionString.ConnectionString("EXEC SP_Android_SelectItembyIdentity '" + _menuID + "'");
-                                            try {
-                                                while (set.next()) {
-                                                    UUID ItemID = UUID.fromString(set.getString("ItemID"));
-                                                    SaveData.Void_Item(SaveData.Trans_HDRID, ItemID, voidTag, ReasonID);
-                                                    break;
-                                                }
-                                                if (!_totals.isEmpty()) {
-                                                    for (int i = 0; i < _totals.size(); i++) {
-                                                        _totalData y = _totals.get(i);
-                                                        if (y._itemID == _menuID) {
-                                                            _totals.remove(i);
-                                                        }
-                                                    }
-                                                }
-                                                my_total.setText("Total: " + formatter.format(net_amount()));
-                                                Toast.makeText(getContext(), "Order is successfully removed.", Toast.LENGTH_LONG).show();
-                                                DOptions.hide();
-                                                Fragment fragment = new MyOrderActivity();
-                                                int ft;
-                                                ft = ((FragmentActivity)getContext()).getSupportFragmentManager().beginTransaction()
-                                                        .replace(R.id.content_main, fragment)
-                                                        .commit();
-                                            } catch (Exception e) {
-                                                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
-                                            }
-                                            _detail_layout.setVisibility(View.GONE);
+
+                    if(ReasonID != null){
+                        final ResultSet set = connectionString.ConnectionString("EXEC SP_Android_SelectItembyIdentity '" + _menuID + "'");
+                        try {
+                            while (set.next()) {
+                                UUID ItemID = UUID.fromString(set.getString("ItemID"));
+                                SaveData.Void_Item(SaveData.Trans_HDRID, ItemID, voidTag, ReasonID);
+                                break;
+                            }
+                            if (!_totals.isEmpty()) {
+                                for (int i = 0; i < _totals.size(); i++) {
+                                    _totalData y = _totals.get(i);
+                                    if (y._itemID == _menuID) {
+                                        _totals.remove(i);
+                                    }
+                                }
+                            }
+                            my_total.setText("Total: " + formatter.format(net_amount()));
+                            Toast.makeText(getContext(), "Order is successfully removed.", Toast.LENGTH_LONG).show();
+                            DOptions.hide();
+                            Fragment fragment = new MyOrderActivity();
+                            int ft;
+                            ft = ((FragmentActivity)getContext()).getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.content_main, fragment)
+                                    .commit();
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
+                        }
+                        _detail_layout.setVisibility(View.GONE);
+                    }
+                    else{
+                        Toast.makeText(getContext(), "You must Select Reason First..", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
             btn_Finish.setLayoutParams(new LinearLayout.LayoutParams(200, LinearLayout.LayoutParams.MATCH_PARENT));
+
+            btn_All.setLayoutParams(new LinearLayout.LayoutParams(200, LinearLayout.LayoutParams.MATCH_PARENT));
             ll_header.addView(txt_Title);
+            ll_header.addView(btn_All);
             ll_header.addView(btn_Finish);
             ll_main.addView(ll_header);
             ll_main.addView(rg);
@@ -1463,6 +1504,7 @@ public class MyOrderActivity extends Fragment {
             dialogOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams lp = dialogOptions.getWindow().getAttributes();
             lp.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            lp.gravity = Gravity.CENTER;
             lp.dimAmount = 0.9f;
             dialogOptions.show();
         } catch (Exception e) {

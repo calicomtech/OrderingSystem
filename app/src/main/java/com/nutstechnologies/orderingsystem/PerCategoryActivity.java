@@ -761,7 +761,7 @@ public class PerCategoryActivity extends Fragment {
                                                                                                 count = count_set.getInt("CountPOS") + 1;
                                                                                                 break;
                                                                                             }
-                                                                                            SaveData.OrderItemSaveForSetMenu(SaveData.Trans_HDRID, ItemID, sub_id, Double.parseDouble(btn_picker.getText().toString()), Price, Amount, count, false);
+                                                                                            SaveData.OrderItemSaveForSetMenuHeader(SaveData.Trans_HDRID, ItemID, sub_id, Double.parseDouble(btn_picker.getText().toString()), Price, Amount, count, false);
                                                                                         }
                                                                                     } catch (Exception e) {
                                                                                         Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();

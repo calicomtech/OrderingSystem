@@ -29,7 +29,6 @@ public class SaveData {
 //    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
 //    String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
-    //region TODO: Save table to msSql Database
     public static void TableSave(String TableName, Integer PaxNo, String joinTable_id, String parent_TableName){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTable '" +  TableName +"'");
         Trans_HDRID = UUID.randomUUID();
@@ -38,24 +37,25 @@ public class SaveData {
         Pax_Number = PaxNo;
         TransactionHeaderSave(TableName, PaxNo, Trans_HDRID, paymentID, joinTable_id, parent_TableName);
     }
-    //endregion
-    //region TODO: Save Transaction Header to msSql Database
+
     public static void TransactionHeaderSave(String TableName, Integer Pax, UUID uuid, UUID PaymentID, String joinTable_id, String parent_TableName) {
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransHDR '" + uuid + "','" + PaymentID
                 + "','" + TableName + "','" + Pax + "', '"  + Device + "', '"  + joinTable_id + "', '" + parent_TableName + "', '" + SaveData.Waiter_ID + "'");
     }
-    //endregion
-
     public static void OrderItemSave(UUID HeaderID, UUID ItemID, Double Qty, Double Price, Double Amount, int count_pos, boolean set_menu){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransDTL '"+ HeaderID +"','"+ItemID
                 +"','"+ Qty +"','"+ Price + "', '"+ Amount + "', '"+ count_pos + "', '"+ set_menu + "', '"+ false + "'");
+    }
+
+    public static void OrderItemSaveForSetMenuHeader(UUID HeaderID, UUID ItemID, UUID SubID, Double Qty, Double Price, Double Amount, int count_pos, boolean set_menu){
+        ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransDTLForSetMenuHeader '"+ HeaderID +"','"+ItemID
+                +"','"+ SubID +"','"+ Qty +"','"+ Price + "', '"+ Amount + "', '"+ count_pos + "', '"+ set_menu + "'");
     }
 
     public static void OrderItemSaveForSetMenu(UUID HeaderID, UUID ItemID, UUID SubID, Double Qty, Double Price, Double Amount, int count_pos, boolean set_menu){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransDTLForSetMenu '"+ HeaderID +"','"+ItemID
                 +"','"+ SubID +"','"+ Qty +"','"+ Price + "', '"+ Amount + "', '"+ count_pos + "', '"+ set_menu + "'");
     }
-
     public static void OrderItemSaveFromSetMenu(UUID HeaderID, UUID ItemID, Float Qty, Double Price, Double Amount, String TableName){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransDTL_FromSetMenu '"+ HeaderID +"','" + ItemID + "','"+ Qty +"','"+ Price +"', '"+ Amount +"','" + TableName + "'");
     }
@@ -92,7 +92,7 @@ public class SaveData {
     public static void Update_Qty_TransModifierDtl(UUID SUBID, double QTY){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_Update_Qty_TransModifierDtl '"+ SUBID +"','"+ QTY +"'");
     }
-//    public static void TransferItem(String FromTable, String ToTable, UUID TransID, UUID _newTransID, UUID itemID){
+    //    public static void TransferItem(String FromTable, String ToTable, UUID TransID, UUID _newTransID, UUID itemID){
 //        ResultSet set = connectionString.ConnectionString("EXEC SP_Android_TransferItem '"+ FromTable +"','"+ ToTable +"','"+ TransID +"','"+ _newTransID + "','"+ itemID +"','"  + Device + "'");
 //    }
     public static boolean GetLoginCredentials(String password){
@@ -226,7 +226,7 @@ public class SaveData {
     }
 
     public static int Getpax(String parent_table) {
-       int pax = 0;
+        int pax = 0;
         try {
             ResultSet set = connectionString.ConnectionString("EXEC SP_Android_Get_TblPax '" + parent_table + "'");
             while (set.next()) {
@@ -301,5 +301,9 @@ public class SaveData {
             Log.v("Sql Exception", ex.getMessage());
         }
         return waiterID;
+    }
+    public static void VoidAll(UUID TransID, UUID ReasonID){
+        ResultSet set = connectionString.ConnectionString("EXEC SP_Android_VoidAll '"+ TransID+ "', '"+ ReasonID +"'");
+
     }
 }
