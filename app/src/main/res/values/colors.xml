@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <color name="darkorange">#FF8C00</color>
+    <color name="red">#FF0000</color>
+    <color name="whitesmoke">#F5F5F5</color>
+    <color name="yellowgreen">#9ACD32</color>
+    <color name="wet_asphalt">#34495e</color>
+</resources>

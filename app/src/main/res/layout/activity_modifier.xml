@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="true">
+
+
+
+    <!--<Button-->
+    <!--android:id="@+id/btnSplit"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="100dp"-->
+    <!--android:text="Button"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--/>-->
+
+
+    <!--<TableLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:stretchColumns="2">-->
+    <!--<TableRow-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_width="match_parent">-->
+
+    <!---->
+    <!--</TableRow>-->
+    <!--<TableRow-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_width="match_parent"-->
+    <!--&gt;-->
+    <!---->
+    <!--</TableRow>-->
+    <!--</TableLayout>-->
+
+</LinearLayout>

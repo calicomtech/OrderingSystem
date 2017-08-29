@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/txtItem"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:visibility="gone"
+
+            android:layout_weight="0.03" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="19dp">
+            <TextView
+                android:id="@+id/txtOrigQty"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:layout_marginLeft="40dp"
+                />
+            <EditText
+                android:id="@+id/EditOrigQty"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:ems="10"
+                android:inputType="number"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="39dp"
+                android:layout_marginLeft="20dp"
+                android:enabled="false"
+                android:paddingLeft="5dp"
+                android:layout_centerVertical="true" />
+            <TextView
+                android:id="@+id/txtTransQty"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:layout_marginLeft="250dp"
+                />
+            <EditText
+                android:id="@+id/EditTransQty"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:ems="10"
+                android:inputType="number"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="39dp"
+                android:layout_marginLeft="250dp"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/black"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:visibility="gone"
+        />
+</RelativeLayout>
+
+
+
