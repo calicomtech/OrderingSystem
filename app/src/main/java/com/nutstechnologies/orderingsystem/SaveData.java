@@ -29,6 +29,7 @@ public class SaveData {
 //    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
 //    String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
+    //region TODO: Save table to msSql Database
     public static void TableSave(String TableName, Integer PaxNo, String joinTable_id, String parent_TableName){
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTable '" +  TableName +"'");
         Trans_HDRID = UUID.randomUUID();
@@ -37,6 +38,7 @@ public class SaveData {
         Pax_Number = PaxNo;
         TransactionHeaderSave(TableName, PaxNo, Trans_HDRID, paymentID, joinTable_id, parent_TableName);
     }
+    //endregion
 
     public static void TransactionHeaderSave(String TableName, Integer Pax, UUID uuid, UUID PaymentID, String joinTable_id, String parent_TableName) {
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_InsertTransHDR '" + uuid + "','" + PaymentID
