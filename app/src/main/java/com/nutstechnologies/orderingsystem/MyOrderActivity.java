@@ -59,12 +59,8 @@ import java.util.UUID;
 import static com.nutstechnologies.orderingsystem.TableActivity.close;
 
 public class MyOrderActivity extends Fragment {
-    _totalData x_data;
-    List<_totalData> _totals = new ArrayList<_totalData>();
     public static List<CheckBox> all_checkbox = new ArrayList<CheckBox>();
     public static List<CheckBox> all_to_checkbox = new ArrayList<CheckBox>();
-    List<Boolean> all_check_state = new ArrayList<Boolean>();
-    List<Boolean> all_to_check_state = new ArrayList<Boolean>();
     public static List<UUID> Detail_ID = new ArrayList<UUID>();
     public static String From;
     public static CheckBox chk;
@@ -73,8 +69,84 @@ public class MyOrderActivity extends Fragment {
     public static UUID ModifID;
     public static UUID RowID;
     public static UUID SUBID;
+    public static String Order;
+    public static List<String> _ListModif = new ArrayList<String>();
+    static double net_amt = 0;
+    public Dialog DOptions;
+    public UUID ReasonID;
+    _totalData x_data;
+    List<_totalData> _totals = new ArrayList<_totalData>();
+    List<Boolean> all_check_state = new ArrayList<Boolean>();
+    List<Boolean> all_to_check_state = new ArrayList<Boolean>();
     List<LinearLayout> llQty_Holder = new ArrayList<LinearLayout>();
     SharedPreferences sharedpreferences;
+
+    public static void SendBilling(Context mContext) {
+        if (StaticClass.CodeStatus == true) {
+            ResultSet set_x = connectionString.ConnectionString("EXEC SP_Android_Update_TransHeader_ByID '" + SaveData.Trans_HDRID + "', '" + net_amt + "'");
+            Toast.makeText(mContext, "Billing request successfully sent to Cashier.", Toast.LENGTH_LONG).show();
+            StaticClass.CodeStatus = false;
+        }
+    }
+
+    public static void SendOrder(Context mContext){
+        if(StaticClass.CodeStatus == true)
+        {
+//            generateNoteOnSD(mContext, "Order.txt");
+            SaveData.Send_Item(SaveData.Trans_HDRID);
+            Fragment fragment = new MyOrderActivity();
+            int ft = ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_main, fragment)
+                    .commit();
+        }
+    }
+
+    public static void SetClickable(Dialog dialog) {
+        if (StaticClass.CodeStatus == true) {
+            if(Single == true){
+                dialog.hide();
+                chk.setChecked(chk.isChecked() == true ? false : true);
+            }
+            else{
+                if (chk.isChecked() == false){
+                    for (int i = 0; i < all_checkbox.size(); i++) {
+                        all_checkbox.get(i).setChecked(true);
+                    }
+                } else{
+                    for (int i = 0; i < all_checkbox.size(); i++) {
+                        all_checkbox.get(i).setChecked(false);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void TakeOut_SetClickable(Dialog dialog) {
+        if (StaticClass.CodeStatus == true) {
+            if(Single == true){
+                dialog.hide();
+                chk.setChecked(chk.isChecked() == true ? false : true);
+            }
+            else{
+                if (chk.isChecked() == false){
+                    for (int i = 0; i < all_checkbox.size(); i++) {
+                        all_to_checkbox.get(i).setChecked(true);
+                    }
+                } else{
+                    for (int i = 0; i < all_checkbox.size(); i++) {
+                        all_to_checkbox.get(i).setChecked(false);
+                    }
+                }
+            }
+        }
+    }
+
+    public static int getScreenWidth(Activity activity) {
+        Point size = new Point();
+        activity.getWindowManager().getDefaultDisplay().getSize(size);
+        return size.x;
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -123,6 +195,7 @@ public class MyOrderActivity extends Fragment {
         }
         return x;
     }
+
     int billing_count(){
         int x = 0;
         ResultSet set_x = connectionString.ConnectionString("EXEC SP_Android_Count_Billing '" + SaveData.Trans_HDRID + "'");
@@ -136,6 +209,7 @@ public class MyOrderActivity extends Fragment {
         }
         return x;
     }
+
     int count_Detail(){
         int x = 0;
         ResultSet set_x = connectionString.ConnectionString("EXEC SP_Android_Count_DetailItem '" + SaveData.Trans_HDRID + "'");
@@ -168,7 +242,7 @@ public class MyOrderActivity extends Fragment {
         MenuItem _Send = menu.findItem(R.id.nav_Send);
         _Send.setVisible(sent_count() > 0 ? true : false);
     }
-    static double net_amt = 0;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
@@ -199,25 +273,7 @@ public class MyOrderActivity extends Fragment {
         }
         return true;
     }
-    public static void SendBilling(Context mContext) {
-        if (StaticClass.CodeStatus == true) {
-            ResultSet set_x = connectionString.ConnectionString("EXEC SP_Android_Update_TransHeader_ByID '" + SaveData.Trans_HDRID + "', '" + net_amt + "'");
-            Toast.makeText(mContext, "Billing request successfully sent to Cashier.", Toast.LENGTH_LONG).show();
-            StaticClass.CodeStatus = false;
-        }
-    }
 
-    public static void SendOrder(Context mContext){
-        if(StaticClass.CodeStatus == true)
-        {
-//            generateNoteOnSD(mContext, "Order.txt");
-            SaveData.Send_Item(SaveData.Trans_HDRID);
-            Fragment fragment = new MyOrderActivity();
-            int ft = ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_main, fragment)
-                    .commit();
-        }
-    }
     public void GetTable() {
         ResultSet _countTable = connectionString.ConnectionString("EXEC SP_Android_Select_Table '" + StaticClass.TableName + "', 'COUNT'");
         try {
@@ -229,6 +285,7 @@ public class MyOrderActivity extends Fragment {
 
         }
     }
+
     private void Generate_Layout(final View view) {
         try {
             final DecimalFormat formatter = new DecimalFormat("#,###.00");
@@ -1141,6 +1198,7 @@ public class MyOrderActivity extends Fragment {
             Log.w("Error connection", "" + e.getMessage());
         }
     }
+
     public boolean check_state(){
         boolean status = true;
         for (int i = 0; i < all_checkbox.size(); i++) {
@@ -1162,6 +1220,7 @@ public class MyOrderActivity extends Fragment {
         }
         return status;
     }
+
     public double net_amount(){
         double _totalAmount = 0;
         if (!_totals.isEmpty()){
@@ -1172,48 +1231,7 @@ public class MyOrderActivity extends Fragment {
         }
         return _totalAmount;
     }
-    public static void SetClickable(Dialog dialog) {
-        if (StaticClass.CodeStatus == true) {
-            if(Single == true){
-                dialog.hide();
-                chk.setChecked(chk.isChecked() == true ? false : true);
-            }
-            else{
-                if (chk.isChecked() == false){
-                    for (int i = 0; i < all_checkbox.size(); i++) {
-                        all_checkbox.get(i).setChecked(true);
-                    }
-                } else{
-                    for (int i = 0; i < all_checkbox.size(); i++) {
-                        all_checkbox.get(i).setChecked(false);
-                    }
-                }
-            }
-        }
-    }
-    public static void TakeOut_SetClickable(Dialog dialog) {
-        if (StaticClass.CodeStatus == true) {
-            if(Single == true){
-                dialog.hide();
-                chk.setChecked(chk.isChecked() == true ? false : true);
-            }
-            else{
-                if (chk.isChecked() == false){
-                    for (int i = 0; i < all_checkbox.size(); i++) {
-                        all_to_checkbox.get(i).setChecked(true);
-                    }
-                } else{
-                    for (int i = 0; i < all_checkbox.size(); i++) {
-                        all_to_checkbox.get(i).setChecked(false);
-                    }
-                }
-            }
-        }
-    }
-    public static String Order;
-    public Dialog DOptions;
-    public UUID ReasonID;
-    public static List<String> _ListModif = new ArrayList<String>();
+
     public void showModifier(View view, final Context mContext, final UUID TransID, final UUID _RowID, final UUID itemID, final UUID SubsID) {
         _ListModif.clear();
         final Dialog dialogOptions = new Dialog(mContext);
@@ -1351,6 +1369,7 @@ public class MyOrderActivity extends Fragment {
         dialogOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogOptions.show();
     }
+
     public void showReason(View view, final Context mContext, final Integer _menuID, final String voidTag, final TextView my_total, final DecimalFormat formatter, final LinearLayout _detail_layout) {
         final Dialog dialogOptions = new Dialog(mContext);
         ResultSet set = connectionString.ConnectionString("EXEC SP_Android_Select_Reason 'VOID'");
@@ -1412,7 +1431,7 @@ public class MyOrderActivity extends Fragment {
             TextView txt_Title = new TextView(mContext);
             txt_Title.setText("VOID REASON");
             txt_Title.setTextSize(40);
-            txt_Title.setPadding(0,0,20,0);
+            txt_Title.setPadding(10,0,20,0);
             txt_Title.setTextColor(Color.WHITE);
             Button btn_Finish = new Button(mContext);
             Button btn_All = new Button(mContext);
@@ -1503,7 +1522,7 @@ public class MyOrderActivity extends Fragment {
             viewGroup.addView(scroll);
             dialogOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams lp = dialogOptions.getWindow().getAttributes();
-            lp.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            lp.width = 770;
             lp.gravity = Gravity.CENTER;
             lp.dimAmount = 0.9f;
             dialogOptions.show();
@@ -1512,12 +1531,11 @@ public class MyOrderActivity extends Fragment {
         }
         DOptions = dialogOptions;
         dialogOptions.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams lp = dialogOptions.getWindow().getAttributes();
+        lp.width = 800;
+        lp.gravity = Gravity.CENTER;
+        lp.dimAmount = 0.9f;
         dialogOptions.show();
-    }
-    public static int getScreenWidth(Activity activity) {
-        Point size = new Point();
-        activity.getWindowManager().getDefaultDisplay().getSize(size);
-        return size.x;
     }
 }
 class _totalData{
